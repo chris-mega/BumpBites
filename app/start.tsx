@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Image, Platform } from 'react-native';
 import { YStack, Text, H1, H3, Paragraph, RadioGroup, ScrollView, XStack, Label, SizeTokens, View, Button } from 'tamagui';
@@ -13,6 +13,7 @@ export default function StartScreen() {
   const [checked, setChecked] = useState('first');
   const [answers, setAnswers] = useState([] as string[]);
   const [currQuestion, setCurrQuestion] = useState(0);
+  const router = useRouter();
 
   return (
     <View>
@@ -29,7 +30,7 @@ export default function StartScreen() {
               if (currQuestion < questions.length) {
                 setCurrQuestion(currQuestion + 1);
               } else {
-                router.replace("/home");
+                router.push('/home');
               }
             }}>
               {option}

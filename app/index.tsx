@@ -1,9 +1,11 @@
 import React from 'react';
-import { YStack, H1, Paragraph, View, Card, H3, XStack, Button, Image, CardProps, Text } from 'tamagui';
+import { YStack, H1, Paragraph, View, Card, H3, XStack, Button, Image, CardProps, Text, SizableText } from 'tamagui';
 import StartScreen from './start';
+import { useRouter } from 'expo-router';
 
 export default function HomeScreen() {
   const [signedIn, setSignedIn] = React.useState(true);
+
   return (
     <View>
       {!signedIn ? <StartScreen /> :
@@ -52,17 +54,17 @@ export default function HomeScreen() {
 }
 
 export function DemoCard({ name, src, ...props }: { name: string, src: any } & CardProps) {
+  const router = useRouter();
   return (
-    <Card elevate size="$4" bordered {...props}>
+    <Card elevate size="$4" bordered {...props} onPress={() => router.push('/recipes')}>
       <Card.Header padded>
-        <Text
+        <SizableText
           color="white"
-          style={{ textShadow: "-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black" }}
           fontWeight="500"
-          fontSize="32px"
+          size="$9"
         >
           {name}
-        </Text>
+        </SizableText>
       </Card.Header>
       <Card.Background>
         <Image
