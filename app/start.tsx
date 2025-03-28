@@ -9,7 +9,8 @@ const questions = [
   { question: "What is your name?", options: [] },
   { question: "Who is pregnant?", options: ["I am", "My partner", "Just here to explore"] },
   { question: "How many weeks:", options: ["1 - 13", "14 - 26", "27-39"] },
-  { question: "My diet is:", options: ["Omnivore", "Vegetarian", "Vegan", "Pescatarian"] },
+  { question: "My diet is:", options: ["Omnivore 🥩", "Vegetarian 🥚", "Vegan 🥬", "Pescatarian 🐟"] },
+  { question: "I am allergic to:", options: ["None", "Peanuts 🥜", "Shellfish 🦪", "Fish 🐟", "Dairy 🥛", "Gluten 🍞", "Egg 🥚", "Soy 🥘", "Sesame 🥯"] },
 ]
 
 interface StartScreenProps {
@@ -30,7 +31,12 @@ export default function StartScreen({ setUser, setSignedIn }: StartScreenProps) 
     if (currQuestion < questions.length - 1) {
       setCurrQuestion(currQuestion + 1);
     } else {
-      const userData = { id: "1", name: answers[0] };
+      const userData = {
+        name: answers[0],
+        weeks_pregnant: answers[2].split(' ')[0],
+        preferences: [answers[3].split(' ')[0]],
+        aversions: [answers[4].split(' ')[0]],
+      };
       saveData('user', userData);
       setUser(userData as UserInterface);
       setSignedIn(true);
