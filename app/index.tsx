@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { YStack, H1, Paragraph, View, Card, H3, XStack, Button, Image, CardProps, Text, SizableText } from 'tamagui';
 import StartScreen from './start';
-import { useRouter } from 'expo-router';
+import { RelativePathString, useRouter } from 'expo-router';
 import { getData } from '../scripts/dataHandling';
 import { UserInterface } from '../scripts/interfaces';
 import LoadingScreen from '../components/loadingScreen';
@@ -32,6 +32,7 @@ export default function HomeScreen() {
             <XStack gap="$3">
               <DemoCard
                 name="Recipes"
+                route="/recipes"
                 src={require("../assets/images/recipes.jpg")}
                 animation="bouncy"
                 size="$4"
@@ -43,6 +44,7 @@ export default function HomeScreen() {
               />
               <DemoCard
                 name="Planner"
+                route="/planner"
                 src={require("../assets/images/planner.jpg")}
                 animation="bouncy"
                 size="$4"
@@ -56,6 +58,7 @@ export default function HomeScreen() {
             <XStack gap="$3">
               <DemoCard
                 name="Cravings and Adversions"
+                route="/cravings"
                 src={require("../assets/images/cravings.jpg")}
                 animation="bouncy"
                 size="$4"
@@ -73,10 +76,10 @@ export default function HomeScreen() {
   }
 }
 
-export function DemoCard({ name, src, ...props }: { name: string, src: any } & CardProps) {
+export function DemoCard({ name, src, route, ...props }: { name: string, route: string, src: any } & CardProps) {
   const router = useRouter();
   return (
-    <Card elevate size="$4" bordered {...props} onPress={() => router.push('/recipes')}>
+    <Card elevate size="$4" bordered {...props} onPress={() => router.push(route as RelativePathString)}>
       <Card.Header padded>
         <SizableText
           color="white"
@@ -88,13 +91,7 @@ export function DemoCard({ name, src, ...props }: { name: string, src: any } & C
       </Card.Header>
       <Card.Background>
         <Image
-          resizeMode="contain"
           alignSelf="center"
-          // source={{
-          //   width: 300,
-          //   height: 300,
-          //   uri: path
-          // }}
           source={src}
           style={{ width: 200, height: 200 }}
         />

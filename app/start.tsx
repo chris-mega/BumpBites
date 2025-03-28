@@ -1,9 +1,10 @@
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Image, Platform } from 'react-native';
-import { YStack, Text, H1, H3, Paragraph, RadioGroup, ScrollView, XStack, Label, SizeTokens, View, Button, Input } from 'tamagui';
+import { YStack, Text, H1, H3, View, Button, Input } from 'tamagui';
 import { UserInterface } from '../scripts/interfaces';
-import { saveData } from '../scripts/dataHandling';
+import { createUser } from '@/scripts/dataHandling';
+import LoadingScreen from '@/components/loadingScreen';
 
 const questions = [
   { question: "What is your name?", options: [] },
@@ -22,6 +23,8 @@ export default function StartScreen({ setUser, setSignedIn }: StartScreenProps) 
   const [answers, setAnswers] = useState(Array(questions.length).fill(''));
   const [currQuestion, setCurrQuestion] = useState(0);
   const [currAnswer, setCurrAnswer] = useState('');
+  const [loading, setLoading] = useState(false);
+
   const router = useRouter();
 
   const handleButton = () => {
@@ -37,46 +40,53 @@ export default function StartScreen({ setUser, setSignedIn }: StartScreenProps) 
         preferences: [answers[3].split(' ')[0]],
         aversions: [answers[4].split(' ')[0]],
       };
-      saveData('user', userData);
-      setUser(userData as UserInterface);
-      setSignedIn(true);
+      setLoading(true);
+      createUser(userData).then((data) => {
+        setUser(data as UserInterface);
+        setSignedIn(true);
+        setLoading(false);
+      })
     }
   }
 
-  return (
-    <View>
-      <YStack padding={20}>
-        <H3>Welcome to BumpBites!</H3>
-        <Text>Let's personalize your experience</Text>
-      </YStack>
-      <YStack padding={20} gap="$3">
-        <H3>{questions[currQuestion].question}</H3>
-        {questions[currQuestion].options.length === 0 ? <Input
-          placeholder="Enter your name"
-          onChangeText={(text) => {
-            setCurrAnswer(text);
-          }}
-        /> : questions[currQuestion].options.map((option, index) => {
-          return (
-            <Button
-              key={index}
-              size="$3"
-              theme="light_pink"
-              variant={currAnswer === option ? undefined : "outlined"}
-              onPress={() => {
-                setCurrAnswer(option);
-              }}
-            >
-              {option}
-            </Button>
-          )
-        })}
-        <Button theme="light-pink" themeInverse onPress={() => handleButton()}>
-          {currQuestion === questions.length ?
-            "Finish" : "Next"}
-        </Button>
-      </YStack>
-    </View>
-  );
+  if (loading) {
+    return <LoadingScreen />
+  } else {
+    return (
+      <View>
+        <YStack padding={20}>
+          <H3>Welcome to BumpBites!</H3>
+          <Text>Let's personalize your experience</Text>
+        </YStack>
+        <YStack padding={20} gap="$3">
+          <H3>{questions[currQuestion].question}</H3>
+          {questions[currQuestion].options.length === 0 ? <Input
+            placeholder="Enter your name"
+            onChangeText={(text) => {
+              setCurrAnswer(text);
+            }}
+          /> : questions[currQuestion].options.map((option, index) => {
+            return (
+              <Button
+                key={index}
+                size="$3"
+                theme="light_pink"
+                variant={currAnswer === option ? undefined : "outlined"}
+                onPress={() => {
+                  setCurrAnswer(option);
+                }}
+              >
+                {option}
+              </Button>
+            )
+          })}
+          <Button theme="light-pink" themeInverse onPress={() => handleButton()}>
+            {currQuestion === questions.length ?
+              "Finish" : "Next"}
+          </Button>
+        </YStack>
+      </View>
+    );
+  }
 }
 

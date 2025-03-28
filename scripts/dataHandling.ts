@@ -1,5 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { v4 as uuidv4 } from 'uuid';
 import { UserInterface } from './interfaces';
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
@@ -25,18 +24,34 @@ export const getData = async (key: string) => {
 };
 
 export const createUser = async (user: any) => {
-  const newId = uuidv4();
-  const userData = { user_id: newId, ...user } as UserInterface;
   try {
     const response = await fetch(`${apiUrl}/create_user`, {
       method: 'POST',
-      body: JSON.stringify(userData),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
     })
     const data = await response.json();
-    console.log(data)
-    return userData;
+    await saveData('user', data);
+    return data;
   } catch (error) {
     console.error('Error retrieving data:', error);
   }
 }
 
+export const getLuckyRecipe = async (user_id: string) => {
+  try {
+    const response = await fetch(`${apiUrl}/get_lucky_recipe`, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({user_id: user_id}),
+    })
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error retrieving data:', error);
+  }
+}
