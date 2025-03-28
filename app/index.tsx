@@ -1,56 +1,76 @@
-import React from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { YStack, H1, Paragraph, View, Card, H3, XStack, Button, Image, CardProps, Text, SizableText } from 'tamagui';
 import StartScreen from './start';
 import { useRouter } from 'expo-router';
+import { getData } from '../scripts/dataHandling';
+import { UserInterface } from '../scripts/interfaces';
+import LoadingScreen from '../components/loadingScreen';
 
 export default function HomeScreen() {
-  const [signedIn, setSignedIn] = React.useState(true);
+  const [user, setUser] = useState({} as UserInterface);
+  const [signedIn, setSignedIn] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  return (
-    <View>
-      {!signedIn ? <StartScreen /> :
-        <YStack padding={20}>
-          <XStack gap="$3">
-            <DemoCard
-              name="Recipes"
-              src={require("../assets/images/recipes.jpg")}
-              animation="bouncy"
-              size="$4"
-              width={200}
-              height={200}
-              scale={0.9}
-              hoverStyle={{ scale: 0.925 }}
-              pressStyle={{ scale: 0.875 }}
-            />
-            <DemoCard
-              name="Planner"
-              src={require("../assets/images/planner.jpg")}
-              animation="bouncy"
-              size="$4"
-              width={200}
-              height={200}
-              scale={0.9}
-              hoverStyle={{ scale: 0.925 }}
-              pressStyle={{ scale: 0.875 }}
-            />
-          </XStack>
-          <XStack gap="$3">
-            <DemoCard
-              name="Cravings and Adversions"
-              src={require("../assets/images/cravings.jpg")}
-              animation="bouncy"
-              size="$4"
-              width={200}
-              height={200}
-              scale={0.9}
-              hoverStyle={{ scale: 0.925 }}
-              pressStyle={{ scale: 0.875 }}
-            />
-          </XStack>
-        </YStack>
-      }
-    </View>
-  );
+  useEffect(() => {
+    const checkUser = async () => {
+      const userData = await getData('user');
+      setUser(userData);
+      setSignedIn(!!userData?.id);
+      setLoading(false);
+    };
+    checkUser();
+  }, [])
+
+  if (loading) {
+    return <LoadingScreen />
+  } else {
+    return (
+      <View>
+        {!signedIn ? <StartScreen setUser={setUser} setSignedIn={setSignedIn} /> :
+          <YStack padding={20}>
+            <XStack gap="$3">
+              <DemoCard
+                name="Recipes"
+                src={require("../assets/images/recipes.jpg")}
+                animation="bouncy"
+                size="$4"
+                width={200}
+                height={200}
+                scale={0.9}
+                hoverStyle={{ scale: 0.925 }}
+                pressStyle={{ scale: 0.875 }}
+              />
+              <DemoCard
+                name="Planner"
+                src={require("../assets/images/planner.jpg")}
+                animation="bouncy"
+                size="$4"
+                width={200}
+                height={200}
+                scale={0.9}
+                hoverStyle={{ scale: 0.925 }}
+                pressStyle={{ scale: 0.875 }}
+              />
+            </XStack>
+            <XStack gap="$3">
+              <DemoCard
+                name="Cravings and Adversions"
+                src={require("../assets/images/cravings.jpg")}
+                animation="bouncy"
+                size="$4"
+                width={200}
+                height={200}
+                scale={0.9}
+                hoverStyle={{ scale: 0.925 }}
+                pressStyle={{ scale: 0.875 }}
+              />
+            </XStack>
+          </YStack>
+        }
+      </View>
+    );
+  }
 }
 
 export function DemoCard({ name, src, ...props }: { name: string, src: any } & CardProps) {

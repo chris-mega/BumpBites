@@ -15,7 +15,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/Avocado.jpg",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.chrismega.BumpBites"
     },
     "web": {
       "bundler": "metro",
@@ -36,6 +37,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "8f627d9d-9ee8-4c53-99e4-f31966409f84"
+      }
+    },
+    "owner": "chris-mega"
   }
 }
